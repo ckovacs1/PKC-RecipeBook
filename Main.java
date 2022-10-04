@@ -27,9 +27,11 @@ class Main {
         r.add(pie);
         r.add(bread);
 
+        /*
         for (int i = 0; i < r.size(); i++) {
             System.out.println(r.get(i).getName());
         }
+         */
 
         /*
         try {
@@ -57,20 +59,38 @@ class Main {
             switch (inp) {
                 case 1:
                     System.out.println("Add");
+                    Recipe newRecipe = createRecipe("Spaghetti", "Italian Dinner", ing, ins);
+                    r.add(newRecipe);
                     break;
                 case 2:
-                    System.out.println("Read");
+                    System.out.println("Recipes: ");
+                    for (int i = 0; i < r.size(); i++) {
+                        System.out.println(r.get(i).getName());
+                    }
                     break;
                 case 3:
                     System.out.println("Update");
+                    for( int i=0; i < r.size(); i++){
+                        if(r.get(i).getName()=="Bread"){
+                            r.get(i).setName("Pita Bread");
+                        }
+                    }
                     break;
                 case 4:
                     System.out.println("Delete");
+                    for( int i=0; i < r.size(); i++){
+                        if(r.get(i).getName()=="Spaghetti"){
+                            r.remove(i);
+                        }
+                    }
                     break;
             }
-        }while (inp != 0) ;
-    }
+        } while (inp != 0);
 
+        for (int i = 0; i < r.size(); i++) {
+            System.out.println(r.get(i).getName());
+        }
+    }
 
 
     public static Recipe createRecipe(String name, String desc, String[] ingredients, String[] instructions){
