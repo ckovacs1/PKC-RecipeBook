@@ -1,4 +1,4 @@
-public class Recipe{
+public class Recipe implements java.io.Serializable{
     private String name;
     private String description;
     private String[] ingredients;
