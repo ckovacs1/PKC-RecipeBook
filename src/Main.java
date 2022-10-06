@@ -26,16 +26,21 @@ public class Main {
                 cwIng, cwIns);
         recipeList.add(cw);
 
+        // flag for quitting program
         boolean flag = false;
+
+        // boolean flag to see if user is in search mode
         boolean searching = false;
+
+        // backup recipebook to store original recipebook
         ArrayList<Recipe> backupRecipeList = new ArrayList<>();
 
         while (!flag) {
-
             if (!searching){
                 System.out.println("Hello! \n Enter 1 to view all recipes \n Enter 2 to add a recipe \n" +
                         "Enter 3 to search through recipe names \n" + " Enter 0 to quit the program" );
             }
+            // else, user is search mode
             else{
                 System.out.println("Showing all recipes with matching names:");
                 System.out.println("Press 1 to continue:");
@@ -43,7 +48,7 @@ public class Main {
 
             int input = scan.nextInt();
             scan.nextLine();
-            // switch cases
+            // switch cases for user input
             switch(input){
                 case 0:
                     flag = true;
@@ -71,6 +76,7 @@ public class Main {
                     }
                     System.out.println(cur.getIng().get(cur.getIng().size()-1));
 
+                    // let user pick choice of how to see instructions
                     System.out.println("Press 1 to see all the instructions");
                     System.out.println("Press 2 to see instructions one at a time \n \n");
 
@@ -96,6 +102,7 @@ public class Main {
                     System.out.println("That's it! Well done.");
                     System.out.println("--------------------------------------------- \n \n \n \n");
 
+                    // user is done searching, switch back to viewing all recipes
                     if (searching){
                         searching = !searching;
                         recipeList = backupRecipeList;
@@ -103,6 +110,8 @@ public class Main {
                     }
 
                     break;
+
+                // add a recipe functionality
                 case 2:
                     System.out.println("Enter recipe name: ");
                     String name = scan.nextLine();
@@ -116,32 +125,36 @@ public class Main {
                     System.out.println("Enter recipe instructions, separated by commas");
 
                     String ins = scan.nextLine();
+                    // parse through user string input as an array
                     String[] ingArr = ing.split("[,]+");
                     String[] insArr = ins.split("[,]+");
 
-                    //convert list to arraylist
+                    //convert array to arraylist
                     ArrayList<String> ingAL = new ArrayList<>(Arrays.asList(ingArr));
                     ArrayList<String> insAL = new ArrayList<>(Arrays.asList(insArr));
                     Recipe newRecipe = new Recipe(name, des, ingAL, insAL);
+
+                    // add new recipe to recipebook
                     recipeList.add(newRecipe);
                     break;
 
+                // user is in search mode
                 case 3:
-                    boolean found = false;
                     System.out.println("Enter search phrase: ");
                     String search = scan.nextLine();
 
+                    // new arraylist containing all recipes name that match search
                     ArrayList<Recipe> arrMatching = new ArrayList<>();
 
+                    // loop through all recipes to find matching string names
                     for (Recipe rec : recipeList){
                         if (rec.getName().equals(search)){
-                            System.out.println("match");
                             arrMatching.add(rec);
                         }
                     }
                     System.out.println("Searching...");
 
-                    // change which array is shown to user
+                    // show only the filtered list of recipes
                     backupRecipeList = recipeList;
                     recipeList = arrMatching;
                     searching = true;
