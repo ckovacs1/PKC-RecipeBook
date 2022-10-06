@@ -35,7 +35,6 @@ public class Main {
             if (!searching){
                 System.out.println("Hello! \n Enter 1 to view all recipes \n Enter 2 to add a recipe \n" +
                         "Enter 3 to search through recipe names \n" + " Enter 0 to quit the program" );
-                System.out.println(recipeList + " RL");
             }
             else{
                 System.out.println("Showing all recipes with matching names:");
