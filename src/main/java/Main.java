@@ -1,79 +1,37 @@
 
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.reflect.TypeToken;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        ArrayList<Recipe> recipeList = new ArrayList<>();
+
+        // original arraylist of all recipe objects
         Scanner scan = new Scanner(System.in);
-
-        // create file to store recipes
-        File db = new File("database.txt");
-
-        // create filewriter to write to file
-//        FileWriter writer = null;
-//        try {
-//            writer = new FileWriter(db);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//
-//        } finally {
-//            // close resources
-//            try {
-//                writer.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-
-
-        // add 3 test cases
-        ArrayList<String> bananabreadIng = new ArrayList<>(Arrays.asList("banana", "bread"));
-        ArrayList<String> bananabreadIns = new ArrayList<>(Arrays.asList("chop", "bake"));
-        Recipe bananaBread = new Recipe("banana bread", "magic between banana and bread",
-                bananabreadIng, bananabreadIns);
-        recipeList.add(bananaBread);
 
         // GSON object to create JSON file
         Gson gson = new Gson();
-        String jsonBananaBread = gson.toJson(bananaBread);
-        writeToFile(jsonBananaBread, db);
-        ArrayList<String> pbjIng = new ArrayList<>(Arrays.asList("peanut butter", "jelly", "bread"));
-        ArrayList<String> pbjIns = new ArrayList<>(Arrays.asList("toast", "spread"));
-        Recipe pbj = new Recipe("peanut butter & jelly sandwich", "magic between pb and jelly",
-                pbjIng, pbjIns);
-        recipeList.add(pbj);
 
-        // convert to JSON
-        String jsonPBJ = gson.toJson(pbj);
-        writeToFile(jsonPBJ, db);
+        // create file to store recipes
+        File db = new File("database.json");
 
+        // convert arraylist of recipes to jsonarray
+//        writeToFile(jsonArr.toString(), db);
 
-        ArrayList<String> cwIng = new ArrayList<>(Arrays.asList("chickens", "Trader Joe's marinate"));
-        ArrayList<String> cwIns = new ArrayList<>(Arrays.asList("marinate", "bake"));
-        Recipe cw = new Recipe("chicken wings", "Trader Joe's chicken wings",
-                cwIng, cwIns);
-        recipeList.add(cw);
-        writeToFile(jsonPBJ, db);
-
-
-        // convert to JSON
-        String jsonCW = gson.toJson(pbj);
-        writeToFile(jsonCW, db);
-
-
-        // GSON object to create JSON file
-//        Gson gcw = new Gson();
-//        String jsonCW = gson.toJson(gcw);
-//        System.out.println(jsonCW);
+        // parse database file
+        String json = FileUtils.readFileToString(new File("database.json"), StandardCharsets.UTF_8);;
+        // convert parsed JSON string into arraylist of recipes
+        ArrayList<Recipe> recipeList = new Gson().fromJson(json, new TypeToken<ArrayList<Recipe>>(){}.getType());
 
         // flag for quitting program
         boolean flag = false;
@@ -139,7 +97,7 @@ public class Main {
                         }
                         System.out.println(instructionLen + " " + cur.getIns().get(instructionLen - 1));
                     } else {
-                        System.out.println("Press 2 to see the next instruction");
+                        System.out.println("Keep pressing 2 to see the next instruction");
                         for (int i = 0; i < instructionLen; i++) {
                             choice = scan.nextInt();
                             scan.nextLine();
@@ -183,6 +141,9 @@ public class Main {
 
                     // add new recipe to recipebook
                     recipeList.add(newRecipe);
+                    JsonArray jsonArr = new Gson().toJsonTree(recipeList).getAsJsonArray();
+                    writeToFile(jsonArr.toString(), db);
+//                    System.out.println(jsonArr.toString());
                     break;
 
                 // user is in search mode
@@ -213,10 +174,12 @@ public class Main {
     public static void writeToFile(String s, File output)
             throws IOException {
         String out = "";
-        BufferedWriter writer = new BufferedWriter(new FileWriter(output, true));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(output));
         writer.write(s);
         writer.close();
     }
+//    public static void parseFile(File db)
+
 
 }
 
