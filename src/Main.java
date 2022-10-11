@@ -1,3 +1,6 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -31,6 +34,28 @@ public class Main {
 
         // boolean flag to see if user is in search mode
         boolean searching = false;
+
+        // create file to store recipes
+        File db = new File("database.txt");
+
+        // create filewriter to write to file
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(db);
+            writer.write("test");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }finally {
+            // close resources
+            try{
+                writer.close();
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+
+
 
         // backup recipebook to store original recipebook
         ArrayList<Recipe> backupRecipeList = new ArrayList<>();
