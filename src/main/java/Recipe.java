@@ -1,16 +1,18 @@
+
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Recipe {
+public class Recipe implements Serializable {
 
     String name;
     String description;
     ArrayList<String> ins = new ArrayList<>();
     ArrayList<String> ing = new ArrayList<>();
 
-    public Recipe (String name, String description,
-                   ArrayList<String> ing, ArrayList<String> ins){
+    public Recipe(String name, String description,
+                  ArrayList<String> ing, ArrayList<String> ins) {
 
         this.name = name;
         this.description = description;
@@ -18,10 +20,11 @@ public class Recipe {
         this.ing = ing;
     }
 
-    public String getDescription(){
+    public String getDescription() {
         return this.description;
     }
-    public String getName(){
+
+    public String getName() {
         return this.name;
     }
 
