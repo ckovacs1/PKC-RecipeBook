@@ -1,3 +1,8 @@
+
+
+import com.google.gson.Gson;
+
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -6,9 +11,29 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
-        ArrayList<Recipe> recipeList = new ArrayList<Recipe>();
+    public static void main(String[] args) throws IOException {
+        ArrayList<Recipe> recipeList = new ArrayList<>();
         Scanner scan = new Scanner(System.in);
+
+        // create file to store recipes
+        File db = new File("database.txt");
+
+        // create filewriter to write to file
+//        FileWriter writer = null;
+//        try {
+//            writer = new FileWriter(db);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//
+//        } finally {
+//            // close resources
+//            try {
+//                writer.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+
 
         // add 3 test cases
         ArrayList<String> bananabreadIng = new ArrayList<>(Arrays.asList("banana", "bread"));
@@ -17,17 +42,38 @@ public class Main {
                 bananabreadIng, bananabreadIns);
         recipeList.add(bananaBread);
 
+        // GSON object to create JSON file
+        Gson gson = new Gson();
+        String jsonBananaBread = gson.toJson(bananaBread);
+        writeToFile(jsonBananaBread, db);
         ArrayList<String> pbjIng = new ArrayList<>(Arrays.asList("peanut butter", "jelly", "bread"));
         ArrayList<String> pbjIns = new ArrayList<>(Arrays.asList("toast", "spread"));
         Recipe pbj = new Recipe("peanut butter & jelly sandwich", "magic between pb and jelly",
                 pbjIng, pbjIns);
         recipeList.add(pbj);
 
+        // convert to JSON
+        String jsonPBJ = gson.toJson(pbj);
+        writeToFile(jsonPBJ, db);
+
+
         ArrayList<String> cwIng = new ArrayList<>(Arrays.asList("chickens", "Trader Joe's marinate"));
         ArrayList<String> cwIns = new ArrayList<>(Arrays.asList("marinate", "bake"));
         Recipe cw = new Recipe("chicken wings", "Trader Joe's chicken wings",
                 cwIng, cwIns);
         recipeList.add(cw);
+        writeToFile(jsonPBJ, db);
+
+
+        // convert to JSON
+        String jsonCW = gson.toJson(pbj);
+        writeToFile(jsonCW, db);
+
+
+        // GSON object to create JSON file
+//        Gson gcw = new Gson();
+//        String jsonCW = gson.toJson(gcw);
+//        System.out.println(jsonCW);
 
         // flag for quitting program
         boolean flag = false;
@@ -35,54 +81,31 @@ public class Main {
         // boolean flag to see if user is in search mode
         boolean searching = false;
 
-        // create file to store recipes
-        File db = new File("database.txt");
-
-        // create filewriter to write to file
-        FileWriter writer = null;
-        try {
-            writer = new FileWriter(db);
-            writer.write("test");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-
-        }finally {
-            // close resources
-            try{
-                writer.close();
-            }catch (IOException e){
-                e.printStackTrace();
-            }
-        }
-
-
-
         // backup recipebook to store original recipebook
-        ArrayList<Recipe> backupRecipeList = new ArrayList<>();
-
+        ArrayList<Recipe> backupRecipeList = new ArrayList<Recipe>();
+        System.out.println("Hello!\n");
         while (!flag) {
-            if (!searching){
-                System.out.println("Hello! \n Enter 1 to view all recipes \n Enter 2 to add a recipe \n" +
-                        "Enter 3 to search through recipe names \n" + " Enter 0 to quit the program" );
+            if (!searching) {
+                System.out.println("Enter 1 to view all recipes \nEnter 2 to add a recipe \n" +
+                        "Enter 3 to search through recipe names \n" + "Enter 0 to quit the program");
             }
             // else, user is search mode
-            else{
+            else {
                 System.out.println("Showing all recipes with matching names:");
                 System.out.println("Press 1 to continue:");
             }
-
             int input = scan.nextInt();
             scan.nextLine();
             // switch cases for user input
-            switch(input){
+            switch (input) {
                 case 0:
                     flag = true;
                     break;
                 case 1:
                     System.out.println("Viewing all recipes: ");
 
-                    for (int i = 0; i < recipeList.size(); i++){
-                        System.out.println(i+1 + ": " + recipeList.get(i).getName());
+                    for (int i = 0; i < recipeList.size(); i++) {
+                        System.out.println(i + 1 + ": " + recipeList.get(i).getName());
                     }
                     System.out.println("---------------------------------------------------- \n");
 
@@ -92,14 +115,14 @@ public class Main {
                     scan.nextLine();
 
                     // display recipe that is picked
-                    Recipe cur = recipeList.get(pickRecipe-1);
+                    Recipe cur = recipeList.get(pickRecipe - 1);
                     System.out.println("Name: " + cur.getName());
                     System.out.println("Description: " + cur.getDescription());
                     System.out.printf("Ingredients: ");
-                    for (int i = 0; i < cur.getIng().size() - 1; i++){
+                    for (int i = 0; i < cur.getIng().size() - 1; i++) {
                         System.out.printf(cur.getIng().get(i) + ", ");
                     }
-                    System.out.println(cur.getIng().get(cur.getIng().size()-1));
+                    System.out.println(cur.getIng().get(cur.getIng().size() - 1));
 
                     // let user pick choice of how to see instructions
                     System.out.println("Press 1 to see all the instructions");
@@ -109,16 +132,15 @@ public class Main {
                     scan.nextLine();
                     int instructionLen = cur.getIns().size();
 
-                    if (choice == 1){
+                    if (choice == 1) {
                         System.out.println("All instructions: ");
-                        for (int i = 0; i < instructionLen - 1; i++){
+                        for (int i = 0; i < instructionLen - 1; i++) {
                             System.out.println(i + 1 + ": " + cur.getIns().get(i));
                         }
                         System.out.println(instructionLen + " " + cur.getIns().get(instructionLen - 1));
-                    }
-                    else{
+                    } else {
                         System.out.println("Press 2 to see the next instruction");
-                        for (int i = 0; i < instructionLen; i++){
+                        for (int i = 0; i < instructionLen; i++) {
                             choice = scan.nextInt();
                             scan.nextLine();
                             System.out.println(i + 1 + ": " + cur.getIns().get(i));
@@ -128,10 +150,10 @@ public class Main {
                     System.out.println("--------------------------------------------- \n \n \n \n");
 
                     // user is done searching, switch back to viewing all recipes
-                    if (searching){
+                    if (searching) {
                         searching = !searching;
                         recipeList = backupRecipeList;
-                        backupRecipeList = new ArrayList<>();
+                        backupRecipeList = new ArrayList<Recipe>();
                     }
 
                     break;
@@ -172,8 +194,8 @@ public class Main {
                     ArrayList<Recipe> arrMatching = new ArrayList<>();
 
                     // loop through all recipes to find matching string names
-                    for (Recipe rec : recipeList){
-                        if (rec.getName().equals(search)){
+                    for (Recipe rec : recipeList) {
+                        if (rec.getName().equals(search)) {
                             arrMatching.add(rec);
                         }
                     }
@@ -184,9 +206,18 @@ public class Main {
                     recipeList = arrMatching;
                     searching = true;
             }
-
         }
     }
+
+    // function to write to file
+    public static void writeToFile(String s, File output)
+            throws IOException {
+        String out = "";
+        BufferedWriter writer = new BufferedWriter(new FileWriter(output, true));
+        writer.write(s);
+        writer.close();
+    }
+
 }
 
 
