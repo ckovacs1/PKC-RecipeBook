@@ -42,7 +42,7 @@ public class Main {
 
         // backup recipebook to store original recipebook
         ArrayList<Recipe> backupRecipeList = new ArrayList<Recipe>();
-        System.out.println("Hello!\n");
+        System.out.println("\nHello!\n");
         while (!flag) {
             if (!searching) {
                 System.out.println("Enter 1 to view all recipes \nEnter 2 to add a recipe \n" +
@@ -166,7 +166,7 @@ public class Main {
 
                     // loop through all recipes to find matching string names
                     for (Recipe rec : recipeList) {
-                        if (rec.getName().equals(search)) {
+                        if (rec.getName().contains(search)) {
                             arrMatching.add(rec);
                         }
                     }
@@ -188,8 +188,8 @@ public class Main {
                     for (int i = 0; i < recipeList.size(); i++) {
                         System.out.println(i + 1 + ": " + recipeList.get(i).getName());
                     }
-                    int toDelete = scan.nextInt();
                     System.out.println("Enter recipe number you wish to delete: ");
+                    int toDelete = scan.nextInt();
                     scan.nextLine();
 
                     // delete recipe from arraylist
@@ -202,6 +202,7 @@ public class Main {
 
                     // notify user
                     System.out.println("Removed recipe number: " + toDelete);
+                    break;
 
                 case 5:
                     System.out.println("Edit mode \n");
