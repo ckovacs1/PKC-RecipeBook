@@ -27,17 +27,25 @@ public class Recipe implements Serializable {
         return this.description;
     }
 
+    public void setDescription(String des){this.description = des;}
+
     public String getName() {
         return this.name;
     }
+    public void setName(String name){this.name = name;}
+
 
     public ArrayList<String> getIns() {
         return this.ins;
     }
+    public void setIns(ArrayList<String> ins){this.ins = ins;}
 
     public ArrayList<String> getIng() {
         return this.ing;
     }
+    public void setIng(ArrayList<String> ing){this.ing = ing;}
+
+
 
 
 

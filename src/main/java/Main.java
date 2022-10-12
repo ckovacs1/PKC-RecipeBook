@@ -28,9 +28,11 @@ public class Main {
 //        writeToFile(jsonArr.toString(), db);
 
         // parse database file
-        String json = FileUtils.readFileToString(new File("database.json"), StandardCharsets.UTF_8);;
+        String json = FileUtils.readFileToString(new File("database.json"), StandardCharsets.UTF_8);
+        ;
         // convert parsed JSON string into arraylist of recipes
-        ArrayList<Recipe> recipeList = new Gson().fromJson(json, new TypeToken<ArrayList<Recipe>>(){}.getType());
+        ArrayList<Recipe> recipeList = new Gson().fromJson(json, new TypeToken<ArrayList<Recipe>>() {
+        }.getType());
 
         // flag for quitting program
         boolean flag = false;
@@ -45,12 +47,13 @@ public class Main {
             if (!searching) {
                 System.out.println("Enter 1 to view all recipes \nEnter 2 to add a recipe \n" +
                         "Enter 3 to search through recipe names \n" +
-                        "Enter 4 to remove a recipe \n" + "Enter 0 to quit the program");
+                        "Enter 4 to remove a recipe \n" +
+                        "Enter 5 to edit a recipe \n" +
+                        "Enter 0 to quit the program");
             }
             // else, user is search mode
             else {
-                System.out.println("Showing all recipes with matching names:");
-                System.out.println("Press 1 to continue:");
+                System.out.println("Press 1 to show all matching search results");
             }
 
             // TODO: INPUT VALIDATION: make sure user inputs number from 0-5
@@ -64,7 +67,7 @@ public class Main {
                     flag = true;
                     break;
 
-                    // user is in view all recipes mode
+                // user is in view all recipes mode
                 case 1:
                     System.out.println("Viewing all recipes: ");
 
@@ -169,13 +172,19 @@ public class Main {
                     }
                     System.out.println("Searching...");
 
-                    // show only the filtered list of recipes
-                    backupRecipeList = recipeList;
-                    recipeList = arrMatching;
-                    searching = true;
-
+                    if (arrMatching.size() > 0) {
+                        // show only the filtered list of recipes
+                        backupRecipeList = recipeList;
+                        recipeList = arrMatching;
+                        searching = true;
+                    }
+                    else{
+                        System.out.println("No results found. \n");
+                    }
+                    break;
                     // user is in delete mode
                 case 4:
+                    System.out.println("Deletion mode: \n");
                     for (int i = 0; i < recipeList.size(); i++) {
                         System.out.println(i + 1 + ": " + recipeList.get(i).getName());
                     }
@@ -193,6 +202,78 @@ public class Main {
 
                     // notify user
                     System.out.println("Removed recipe number: " + toDelete);
+
+                case 5:
+                    System.out.println("Edit mode \n");
+                    System.out.println("Enter recipe number you wish to edit: ");
+                    for (int i = 0; i < recipeList.size(); i++) {
+                        System.out.println(i + 1 + ": " + recipeList.get(i).getName());
+                    }
+                    int toEdit = scan.nextInt();
+                    scan.nextLine();
+                    cur = recipeList.get(toEdit - 1);
+
+                    System.out.println("Editing: " + cur.getName());
+                    System.out.println("Enter 1 to edit name. \nEnter 2 to edit description. " +
+                            "\nEnter 3 to edit ingredients list. \nEnter 4 to edit instructions list.");
+                    int editChoice = scan.nextInt();
+                    scan.nextLine();
+
+                    switch (editChoice) {
+                        case 1:
+                            // change name
+                            System.out.println("Enter new name: ");
+                            String newName = scan.nextLine();
+                            cur.setName(newName);
+                            System.out.println("Name of recipe has been changed to: " + cur.getName());
+                            break;
+
+                        case 2:
+                            // change des
+                            System.out.println("Old description: ");
+                            System.out.println(cur.getDescription());
+                            System.out.println("Enter new description: ");
+                            String newDes = scan.nextLine();
+                            cur.setDescription(newDes);
+                            System.out.println("Description has been changed to: " + cur.getDescription());
+                            break;
+
+                        case 3:
+                            System.out.println("Enter new ingredients list, separated by commas");
+                            String newIng = scan.nextLine();
+
+                            // parse through user string input as an array
+                            String[] newIngArr = newIng.split("[,]+");
+
+                            //convert array to arraylist
+                            ArrayList<String> newIngAL = new ArrayList<>(Arrays.asList(newIngArr));
+
+                            // set new ingredients
+                            cur.setIng(newIngAL);
+                            System.out.println("Ingredients list has been changed.");
+                            break;
+
+
+                        case 4:
+                            System.out.println("Enter new instructions list, separated by commas");
+                            String newIns = scan.nextLine();
+                            // parse through user string input as an array
+                            String[] newInsArr = newIns.split("[,]+");
+
+                            //convert array to arraylist
+                            ArrayList<String> newInsAL = new ArrayList<>(Arrays.asList(newInsArr));
+
+                            // set new ingredients
+                            cur.setIng(newInsAL);
+                            System.out.println("Instructions list has been changed");
+                            break;
+
+                    }
+                    System.out.println("\n");
+                    // update database
+                    JsonArray updatedArr = new Gson().toJsonTree(recipeList).getAsJsonArray();
+                    writeToFile(updatedArr.toString(), db);
+
             }
         }
     }
