@@ -1,5 +1,4 @@
 
-
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
@@ -45,13 +44,18 @@ public class Main {
         while (!flag) {
             if (!searching) {
                 System.out.println("Enter 1 to view all recipes \nEnter 2 to add a recipe \n" +
-                        "Enter 3 to search through recipe names \n" + "Enter 0 to quit the program");
+                        "Enter 3 to search through recipe names \n" +
+                        "Enter 4 to remove a recipe \n" + "Enter 0 to quit the program");
             }
             // else, user is search mode
             else {
                 System.out.println("Showing all recipes with matching names:");
                 System.out.println("Press 1 to continue:");
             }
+
+            // TODO: INPUT VALIDATION: make sure user inputs number from 0-5
+
+
             int input = scan.nextInt();
             scan.nextLine();
             // switch cases for user input
@@ -59,6 +63,8 @@ public class Main {
                 case 0:
                     flag = true;
                     break;
+
+                    // user is in view all recipes mode
                 case 1:
                     System.out.println("Viewing all recipes: ");
 
@@ -141,9 +147,10 @@ public class Main {
 
                     // add new recipe to recipebook
                     recipeList.add(newRecipe);
+
+                    // update database
                     JsonArray jsonArr = new Gson().toJsonTree(recipeList).getAsJsonArray();
                     writeToFile(jsonArr.toString(), db);
-//                    System.out.println(jsonArr.toString());
                     break;
 
                 // user is in search mode
@@ -166,6 +173,26 @@ public class Main {
                     backupRecipeList = recipeList;
                     recipeList = arrMatching;
                     searching = true;
+
+                    // user is in delete mode
+                case 4:
+                    for (int i = 0; i < recipeList.size(); i++) {
+                        System.out.println(i + 1 + ": " + recipeList.get(i).getName());
+                    }
+                    int toDelete = scan.nextInt();
+                    System.out.println("Enter recipe number you wish to delete: ");
+                    scan.nextLine();
+
+                    // delete recipe from arraylist
+                    cur = recipeList.get(toDelete - 1);
+                    recipeList.remove(cur);
+
+                    // update database
+                    JsonArray arrToWrite = new Gson().toJsonTree(recipeList).getAsJsonArray();
+                    writeToFile(arrToWrite.toString(), db);
+
+                    // notify user
+                    System.out.println("Removed recipe number: " + toDelete);
             }
         }
     }
@@ -178,7 +205,6 @@ public class Main {
         writer.write(s);
         writer.close();
     }
-//    public static void parseFile(File db)
 
 
 }

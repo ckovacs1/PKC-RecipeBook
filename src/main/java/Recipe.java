@@ -1,4 +1,5 @@
 
+
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -10,6 +11,8 @@ public class Recipe implements Serializable {
     String description;
     ArrayList<String> ins = new ArrayList<>();
     ArrayList<String> ing = new ArrayList<>();
+
+    boolean toRemove;
 
     public Recipe(String name, String description,
                   ArrayList<String> ing, ArrayList<String> ins) {
@@ -35,5 +38,7 @@ public class Recipe implements Serializable {
     public ArrayList<String> getIng() {
         return this.ing;
     }
+
+
 
 }
