@@ -166,7 +166,7 @@ public class Main {
 
                     // loop through all recipes to find matching string names
                     for (Recipe rec : recipeList) {
-                        if (rec.getName().equals(search)) {
+                        if (rec.getName().contains(search)) {
                             arrMatching.add(rec);
                         }
                     }
