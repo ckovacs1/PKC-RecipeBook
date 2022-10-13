@@ -42,7 +42,7 @@ public class Main {
 
         // backup recipebook to store original recipebook
         ArrayList<Recipe> backupRecipeList = new ArrayList<Recipe>();
-        System.out.println("\nHello!\n");
+        System.out.println("\nWelcome to PKC Recipe Book!\n");
         while (!flag) {
             if (!searching) {
                 System.out.println("Enter 1 to view all recipes \nEnter 2 to add a recipe \n" +
