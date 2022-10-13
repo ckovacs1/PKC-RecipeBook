@@ -7,10 +7,7 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
-import java.util.List;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -45,22 +42,43 @@ public class Main {
         System.out.println("\nWelcome to PKC Recipe Book!\n");
         while (!flag) {
             if (!searching) {
-                System.out.println("Enter 1 to view all recipes \nEnter 2 to add a recipe \n" +
+                System.out.println("\n\nEnter 1 to view all recipes \nEnter 2 to add a recipe \n" +
                         "Enter 3 to search through recipe names \n" +
                         "Enter 4 to remove a recipe \n" +
                         "Enter 5 to edit a recipe \n" +
-                        "Enter 0 to quit the program");
+                        "Enter 0 to quit the program \n");
             }
             // else, user is search mode
             else {
-                System.out.println("Press 1 to show all matching search results");
+                System.out.println("\n\nDisplaying all searched results");
             }
 
-            // TODO: INPUT VALIDATION: make sure user inputs number from 0-5
+            // input validation for if it's a number
+            int input = -1;
+            if (!searching) {
+                while (true) {
+                    try {
+                        System.out.print("Enter number between 0 and 5: ");
+                        input = scan.nextInt();
+                        if (input >= 0 && input <= 5) {
+                            scan.nextLine();
+                            break;
+                        }
+                        System.out.println("Number is out of range.");
+
+                    } catch (InputMismatchException e) {
+                        System.out.println("You did not enter an integer.");
+                        scan.nextLine(); // needed to clear buffer
+                    }
+                }
+            }
+            if (searching){
+                input = 1;
+            }
 
 
-            int input = scan.nextInt();
-            scan.nextLine();
+//            scan.nextLine();
+
             // switch cases for user input
             switch (input) {
                 case 0:
@@ -69,7 +87,10 @@ public class Main {
 
                 // user is in view all recipes mode
                 case 1:
-                    System.out.println("Viewing all recipes: ");
+                    if (!searching){
+                        System.out.println("\nViewing all recipes: \n");
+                    }
+
 
                     for (int i = 0; i < recipeList.size(); i++) {
                         System.out.println(i + 1 + ": " + recipeList.get(i).getName());
@@ -77,9 +98,27 @@ public class Main {
                     System.out.println("---------------------------------------------------- \n");
 
                     // now let user pick a recipe
-                    System.out.println("Enter recipe number to view");
-                    int pickRecipe = scan.nextInt();
-                    scan.nextLine();
+//                    System.out.println("Enter recipe number to view");
+
+                    // input validate
+                    int pickRecipe = -1;
+                    while (true) {
+                        try {
+                            System.out.print("Enter a recipe number to view: ");
+                            pickRecipe = scan.nextInt();
+                            scan.nextLine();
+                            if (pickRecipe >= 1 && pickRecipe <= recipeList.size()) {
+                                break;
+                            }
+                            System.out.println("Number is out of range.");
+
+                        } catch (InputMismatchException e) {
+                            System.out.println("You did not enter an integer. ");
+                            scan.nextLine(); // needed to clear buffer
+                        }
+                    }
+                    System.out.println("\n");
+
 
                     // display recipe that is picked
                     Recipe cur = recipeList.get(pickRecipe - 1);
@@ -95,22 +134,40 @@ public class Main {
                     System.out.println("Press 1 to see all the instructions");
                     System.out.println("Press 2 to see instructions one at a time \n \n");
 
-                    int choice = scan.nextInt();
-                    scan.nextLine();
+                    // input validate
+                    int choice = -1;
+                    while (true) {
+                        try {
+                            System.out.print("Enter 1 or 2: ");
+                            choice = scan.nextInt();
+                            if (choice >= 1 && choice <= 2) {
+                                break;
+                            }
+                            System.out.println("Number is out of range.");
+
+                        } catch (InputMismatchException e) {
+                            System.out.println("You did not enter an integer. ");
+                            scan.nextLine(); // needed to clear buffer
+                        }
+                    }
+
                     int instructionLen = cur.getIns().size();
 
                     if (choice == 1) {
-                        System.out.println("All instructions: ");
+                        System.out.println("\n\nAll instructions: ");
                         for (int i = 0; i < instructionLen - 1; i++) {
                             System.out.println(i + 1 + ": " + cur.getIns().get(i));
                         }
                         System.out.println(instructionLen + " " + cur.getIns().get(instructionLen - 1));
                     } else {
-                        System.out.println("Keep pressing 2 to see the next instruction");
+                        System.out.println("Press any key to see the next instruction");
+                        scan.next();
                         for (int i = 0; i < instructionLen; i++) {
-                            choice = scan.nextInt();
-                            scan.nextLine();
-                            System.out.println(i + 1 + ": " + cur.getIns().get(i));
+                            if (scan.hasNextLine()) {
+
+                                System.out.println(i + 1 + ": " + cur.getIns().get(i));
+                                scan.next();
+                            }
                         }
                     }
                     System.out.println("That's it! Well done.");
@@ -177,20 +234,37 @@ public class Main {
                         backupRecipeList = recipeList;
                         recipeList = arrMatching;
                         searching = true;
-                    }
-                    else{
+                    } else {
                         System.out.println("No results found. \n");
                     }
                     break;
-                    // user is in delete mode
+                // user is in delete mode
                 case 4:
-                    System.out.println("Deletion mode: \n");
+                    System.out.println("\n\nDeletion mode: \n");
                     for (int i = 0; i < recipeList.size(); i++) {
                         System.out.println(i + 1 + ": " + recipeList.get(i).getName());
                     }
-                    System.out.println("Enter recipe number you wish to delete: ");
-                    int toDelete = scan.nextInt();
-                    scan.nextLine();
+//                    System.out.println("Enter recipe number you wish to DELETE: ");
+                    int toDelete = -1;
+                    while (true) {
+                        try {
+                            System.out.print("\nEnter a recipe number to DELETE: \nEnter 0 to EXIT delete mode\n");
+                            toDelete = scan.nextInt();
+                            if (toDelete >= 0 && toDelete <= recipeList.size() + 1) {
+                                break;
+                            }
+                            System.out.println("Number is out of range.");
+
+                        } catch (InputMismatchException e) {
+                            System.out.println("You did not enter an integer. ");
+                            scan.nextLine(); // needed to clear buffer
+                        }
+                    }
+
+                    // allow user to exit DELETE mode
+                    if (toDelete == 0){
+                        break;
+                    }
 
                     // delete recipe from arraylist
                     cur = recipeList.get(toDelete - 1);
@@ -202,24 +276,70 @@ public class Main {
 
                     // notify user
                     System.out.println("Removed recipe number: " + toDelete);
+                    System.out.println("---------------------------------------------------- \n");
+
+
                     break;
 
                 case 5:
                     System.out.println("Edit mode \n");
-                    System.out.println("Enter recipe number you wish to edit: ");
+//                    System.out.println("Enter recipe number you wish to edit: ");
                     for (int i = 0; i < recipeList.size(); i++) {
                         System.out.println(i + 1 + ": " + recipeList.get(i).getName());
                     }
-                    int toEdit = scan.nextInt();
-                    scan.nextLine();
+                    System.out.println("\n");
+
+                    // input validate
+                    int toEdit = -1;
+                    while (true) {
+                        try {
+                            System.out.print("Enter a recipe number to EDIT: \nEnter 0 to EXIT edit mode \n");
+                            toEdit = scan.nextInt();
+                            scan.nextLine();
+                            if (toEdit >= 0 && toEdit <= recipeList.size() + 1) {
+                                break;
+                            }
+                            System.out.println("Number is out of range.");
+
+                        } catch (InputMismatchException e) {
+                            System.out.println("You did not enter an integer. ");
+                            scan.nextLine(); // needed to clear buffer
+                        }
+                    }
+
+                    if (toEdit == 0){
+                        break;
+                    }
                     cur = recipeList.get(toEdit - 1);
 
-                    System.out.println("Editing: " + cur.getName());
-                    System.out.println("Enter 1 to edit name. \nEnter 2 to edit description. " +
-                            "\nEnter 3 to edit ingredients list. \nEnter 4 to edit instructions list.");
-                    int editChoice = scan.nextInt();
-                    scan.nextLine();
+                    System.out.println("\nEditing: " + cur.getName());
+//                    System.out.println("Enter 1 to edit name. \nEnter 2 to edit description. " +
+//                            "\nEnter 3 to edit ingredients list. \nEnter 4 to edit instructions list.");
 
+                    // allow user to pick which recipe to edit
+                    int editChoice = -1;
+                    while (true) {
+                        try {
+                            System.out.println("Enter 1 to edit name. \nEnter 2 to edit description. " +
+                                    "\nEnter 3 to edit ingredients list. " +
+                                    "\nEnter 4 to edit instructions list. \nEnter 0 to EXIT edit mode \n");
+                            editChoice = scan.nextInt();
+                            scan.nextLine();
+                            if (editChoice >= 0 && editChoice <= 4) {
+                                break;
+                            }
+                            System.out.println("Number is out of range.");
+
+                        } catch (InputMismatchException e) {
+                            System.out.println("You did not enter an integer. ");
+                            scan.nextLine(); // needed to clear buffer
+                        }
+                    }
+
+                    if (editChoice == 0){
+                        break;
+                    }
+                    System.out.println(editChoice);
                     switch (editChoice) {
                         case 1:
                             // change name
@@ -270,6 +390,7 @@ public class Main {
                             break;
 
                     }
+                    System.out.println("---------------------------------------------------- \n");
                     System.out.println("\n");
                     // update database
                     JsonArray updatedArr = new Gson().toJsonTree(recipeList).getAsJsonArray();
